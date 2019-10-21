@@ -5,20 +5,30 @@
   "version": "0.1.0",
   "author": "Kyle Mathews <mathews.kyle@gmail.com>",
   "dependencies": {
+    "@hot-loader/react-dom": "^16.10.2",
+    "babel-plugin-styled-components": "^1.10.6",
     "gatsby": "^2.15.28",
     "gatsby-image": "^2.2.23",
+    "gatsby-plugin-disqus": "^1.1.2",
     "gatsby-plugin-manifest": "^2.2.20",
     "gatsby-plugin-offline": "^3.0.11",
     "gatsby-plugin-react-helmet": "^3.1.10",
     "gatsby-plugin-sharp": "^2.2.27",
+    "gatsby-plugin-styled-components": "^3.1.8",
+    "gatsby-remark-prismjs": "^3.3.18",
     "gatsby-source-filesystem": "^2.1.28",
+    "gatsby-transformer-remark": "^2.6.27",
     "gatsby-transformer-sharp": "^2.2.19",
+    "prismjs": "^1.17.1",
     "prop-types": "^15.7.2",
     "react": "^16.10.1",
-    "react-dom": "^16.10.1",
-    "react-helmet": "^5.2.1"
+    "react-dom": "^16.10.2",
+    "react-helmet": "^5.2.1",
+    "styled-components": "^4.4.0",
+    "styled-system": "^5.1.2"
   },
   "devDependencies": {
+    "gatsby-plugin-root-import": "^2.0.5",
     "prettier": "^1.18.2"
   },
   "keywords": [

@@ -10,79 +10,135 @@ import PropTypes from "prop-types"
 import Helmet from "react-helmet"
 import { useStaticQuery, graphql } from "gatsby"
 
-function SEO({ description, lang, meta, title }) {
+function SEO({ title, description, banner, pathname, article }) {
   const { site } = useStaticQuery(
     graphql`
       query {
         site {
+          buildTime
           siteMetadata {
-            title
-            description
+            defaultTitle
+            titleAlt
+            shortName
             author
+            siteLanguage
+            logo
+            siteUrl
+            pathPrefix
+            defaultDescription
+            defaultBanner
+            twitter
           }
         }
       }
     `
   )
 
-  const metaDescription = description || site.siteMetadata.description
+  const seo = {
+    title: title || site.siteMetadata.defaultTitle,
+    description: description || site.siteMetadata.defaultDescription,
+    image: `${site.siteMetadata.siteUrl}${banner || site.siteMetadata.defaultBanner}`,
+    url: `${site.siteMetadata.siteUrl}${pathname || '/'}`,
+    //this needs to be fixed since a post will have a specific image
+  };
+
+  const realPrefix = site.siteMetadata.pathPrefix === '/' ? '' : site.siteMetadata.pathPrefix;
+
+  let schemaOrgJSONLD = [
+    {
+      '@context': 'http://schema.org',
+      '@type': 'WebSite',
+      '@id': site.siteMetadata.siteUrl,
+      url: site.siteMetadata.siteUrl,
+      name: site.siteMetadata.defaultTitle,
+      alternateName: site.siteMetadata.titleAlt || '',
+    },
+  ];
+
+  if (article) {
+    schemaOrgJSONLD = [
+      {
+        '@context': 'http://schema.org',
+        '@type': 'BlogPosting',
+        '@id': seo.url,
+        url: seo.url,
+        name: title,
+        alternateName: site.siteMetadata.titleAlt || '',
+        headline: title,
+        image: {
+          '@type': 'ImageObject',
+          url: seo.image,
+        },
+        description: seo.description,
+        datePublished: site.buildTime,
+        dateModified: site.buildTime,
+        author: {
+          '@type': 'Person',
+          name: site.siteMetadata.author,
+        },
+        publisher: {
+          '@type': 'Organization',
+          name: site.siteMetadata.author,
+          logo: {
+            '@type': 'ImageObject',
+            url: site.siteMetadata.siteUrl + realPrefix + site.siteMetadata.logo,
+          },
+        },
+        isPartOf: site.siteMetadata.siteUrl,
+        mainEntityOfPage: {
+          '@type': 'WebSite',
+          '@id': site.siteMetadata.siteUrl,
+        },
+      },
+    ];
+  }
+
 
   return (
-    <Helmet
-      htmlAttributes={{
-        lang,
-      }}
-      title={title}
-      titleTemplate={`%s | ${site.siteMetadata.title}`}
-      meta={[
-        {
-          name: `description`,
-          content: metaDescription,
-        },
-        {
-          property: `og:title`,
-          content: title,
-        },
-        {
-          property: `og:description`,
-          content: metaDescription,
-        },
-        {
-          property: `og:type`,
-          content: `website`,
-        },
-        {
-          name: `twitter:card`,
-          content: `summary`,
-        },
-        {
-          name: `twitter:creator`,
-          content: site.siteMetadata.author,
-        },
-        {
-          name: `twitter:title`,
-          content: title,
-        },
-        {
-          name: `twitter:description`,
-          content: metaDescription,
-        },
-      ].concat(meta)}
-    />
+    <>
+      <Helmet title={seo.title}>
+        <html lang={site.siteMetadata.siteLanguage} />
+        <meta name="description" content={seo.description} />
+        <meta name="image" content={seo.image} />
+        <meta name="apple-mobile-web-app-title" content={site.siteMetadata.shortName} />
+        <meta name="application-name" content={site.siteMetadata.shortName} />
+        <script type="application/ld+json">
+          {JSON.stringify(schemaOrgJSONLD)}
+        </script>
+
+        {/* OpenGraph  */}
+        <meta property="og:url" content={seo.url} />
+        <meta property="og:type" content={article ? 'article' : null} />
+        <meta property="og:title" content={seo.title} />
+        <meta property="og:description" content={seo.description} />
+        <meta property="og:image" content={seo.image} />
+
+        {/* Twitter Card */}
+        <meta name="twitter:card" content="summary_large_image" />
+        <meta name="twitter:creator" content={site.siteMetadata.twitter} />
+        <meta name="twitter:title" content={seo.title} />
+        <meta name="twitter:description" content={seo.description} />
+        <meta name="twitter:image" content={seo.image} />
+      </Helmet>
+    </>
   )
 }
 
-SEO.defaultProps = {
-  lang: `en`,
-  meta: [],
-  description: ``,
-}
-
 SEO.propTypes = {
+  title: PropTypes.string,
   description: PropTypes.string,
-  lang: PropTypes.string,
-  meta: PropTypes.arrayOf(PropTypes.object),
-  title: PropTypes.string.isRequired,
-}
+  banner: PropTypes.string,
+  pathname: PropTypes.string,
+  article: PropTypes.bool,
+};
+
+SEO.defaultProps = {
+  title: null,
+  description: null,
+  banner: null,
+  pathname: null,
+  article: false,
+};
+
 
 export default SEO
