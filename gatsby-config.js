@@ -51,6 +51,12 @@ module.exports = {
         // Plugins configs
         plugins: [
           {
+            resolve: `gatsby-remark-images`,
+            options: {
+
+            },
+          },
+          {
             resolve: `gatsby-remark-prismjs`,
             options: {
 
