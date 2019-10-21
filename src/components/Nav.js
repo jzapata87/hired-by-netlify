@@ -28,7 +28,6 @@ function Navbar({ title }) {
       <Nav width='80%' mx='auto' py={2}>
         <StyledLink to="/" m={1}>Hired by Netlify</StyledLink>
         <Box mx='auto'></Box>
-        <StyledLink to="/" m={1}>Link 1</StyledLink>
       </Nav>
     </Section>
   );
